@@ -10,7 +10,6 @@ function getComputerChoice() {
 }
 
 function playRound(pSelection, cSelection) {
-    pSelection = pSelection[0].toUpperCase() + (pSelection.slice(1, pSelection.length)).toLowerCase();
     if ((pSelection == 'Rock' && cSelection == 'Scissors') || (pSelection == 'Paper' && cSelection == 'Rock') || (pSelection == 'Scissors' && cSelection == 'Paper')) {
         return `You Won! ${pSelection} beats ${cSelection}`;
     }
@@ -20,44 +19,50 @@ function playRound(pSelection, cSelection) {
     else if ((pSelection == 'Rock' && cSelection == 'Paper') || (pSelection == 'Paper' && cSelection == 'Scissors') || (pSelection == 'Scissors' && cSelection == 'Rock')) {
         return `You Lost! ${cSelection} beats ${pSelection}`;
     }
-    else {
-        return 'INVALID MOVE'
-    }
 }
 
 function game() {
     let winCount = 0;
     let tieCount = 0;
     let loseCount = 0;
-    while (1) {
-        let pSelection = prompt("Choose between 'Rock', 'Paper, or 'Scissors'");
-        let result = playRound(pSelection, getComputerChoice());
-        if (result.slice(4,7) == 'Won') {
-            winCount++;
-        }
-        else if (result.slice(4,8) == 'Tied') {
-            tieCount++;
-        }
-        else if (result.slice(4,8) == 'Lost') {
-            loseCount++;
-        }
-        
-        console.log(result);
-        console.log('Wins: ' + winCount);
-        console.log('Ties: ' + tieCount);
-        console.log('Losses: ' + loseCount);
 
-        if (winCount == 5) {
-            console.log('YOU WON THE GAME!')
-            break;
-        }
-        else if (loseCount == 5) {
-            console.log('YOU LOST THE GAME!')
-            break;
-        }
-    }
+    const options = document.querySelectorAll('button');
+    options.forEach(option => {
+        option.addEventListener('click',() => {
+            let pSelection = option.textContent;
+
+            let result = playRound(pSelection, getComputerChoice());
+            if (result.slice(4,7) == 'Won') {
+                winCount++;
+            }
+            else if (result.slice(4,8) == 'Tied') {
+                tieCount++;
+            }
+            else if (result.slice(4,8) == 'Lost') {
+                loseCount++;
+            }
+    
+            const roundResult = document.querySelector(".roundResult");
+            roundResult.textContent = result;
+
+            const score = document.querySelector(".score");
+            score.textContent = `Wins: ${winCount} Ties: ${tieCount} Losses: ${loseCount}`;
+
+            const gameResult = document.querySelector(".gameResult");
+            if (winCount == 5) {
+                gameResult.textContent = 'YOU WON THE GAME!'
+                options.forEach(option => {
+                    option.disabled = true;
+                });
+            }
+            else if (loseCount == 5) {
+                gameResult.textContent = 'YOU LOST THE GAME!'
+                options.forEach(option => {
+                    option.disabled = true;
+                });
+            }
+        });
+    });
 }
 
-console.log('ROCK PAPER SCISSORS GAME!');
-console.log('FIRST TO WIN 5 ROUNDS WINS THE GAME!');
 game();
